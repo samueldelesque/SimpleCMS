@@ -1,0 +1,12 @@
+doctype html
+html(lang="en")
+	head
+		title= page.title
+		link(rel="stylesheet",href=cdn+"css/index.css")
+	body
+		main
+			h1= page.title
+			ul(class="content")
+				each img in page.files
+					li
+						img(src=cdn+img)
