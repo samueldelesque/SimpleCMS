@@ -2,11 +2,12 @@ doctype html
 html(lang="en")
 	head
 		title= page.title
+		meta(name="description", content=page.description)
 		link(rel="stylesheet",href=cdn+"css/index.css")
 	body
 		main
 			h1= page.title
 			ul(class="content")
-				each img in page.files
+				each img in page.images
 					li
 						img(src=cdn+img)

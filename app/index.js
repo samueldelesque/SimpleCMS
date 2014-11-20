@@ -1,40 +1,39 @@
-var fs    = require('fs');
-var jade = require('jade');
 var http = require('http');
+var fs    = require('fs');
+var Site = require("./includes/site");
 
-var base = "./content";
-var cdn = "http://0.0.0.0:8080/";
+GLOBAL.cdn = "http://0.0.0.0:8080/";
 
-var pages = {};
-fs.readdir(base,function(e,folders){
+var urls = ["samueldelesque.com"];
+
+var sites = {};
+fs.readdir("./sites",function(e,folders){
 	if(e){
-		console.error("Failed to read directory!",e);
-		return;
+		console.error("Could not open sites dir!");
 	}
-	var ignore = [".DS_Store","css"];
-	folders.forEach(function(el,i){
-		if(ignore.indexOf(el) > -1)return;
-		pages[el] = {title:el,files:[]};
-		fs.readdir(base+"/"+el,function(e,files){
-			files.forEach(function(fi,i){
-				if(ignore.indexOf(fi) > -1)return;
-				pages[el].files.push(el+"/"+fi);
-			});
-		});
+	folders.forEach(function(url){
+		sites[url] = new Site(url).render();
 	});
-
 });
 
-
-setTimeout(function(){
-	pages.cdn = cdn;
-	var html = jade.renderFile('./templates/plain.jade', {cdn:cdn,page:pages.home});
-
-	http.createServer(function (request, response) {
-	    response.writeHead(200, {
-	        'Content-Type': 'text/html',
-	        'Access-Control-Allow-Origin' : '*'
-	    });
-	    response.end(html);
-	}).listen(1337);
-}, 200);
+http.createServer(function (request, response) {
+	var host_parts = request.headers.host.replace(/http(s)?:\/\//g,'').split(":");
+	var host = host_parts[0];
+	if(!sites[host]){
+		response.writeHead(404, {
+			'Content-Type': 'text/html',
+			'Access-Control-Allow-Origin' : '*'
+		});
+		response.end("Site not found ("+host+")!");
+	}
+	else{
+		response.writeHead(200, {
+			'Content-Type': 'text/html',
+			'Access-Control-Allow-Origin' : '*'
+		});
+		sites[host_parts[0]].show(request.url.split("/"),function(html){
+			response.end(html);
+		});
+	}
+}).listen(1337);
+console.log("Listening!	");
