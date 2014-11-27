@@ -24,6 +24,6 @@
   "dependencies": {
     "http-server": "~0.7.3",
     "dropbox": "~0.10.3",
-    "jade": "~1.7.0"
+    "jade":"latest"
   }
 }
