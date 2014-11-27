@@ -4,7 +4,7 @@ var Site = require("./includes/site");
 
 GLOBAL.cdn = "http://0.0.0.0:8080/";
 
-var urls = ["samueldelesque.com"];
+var urls = [];
 
 var sites = {};
 fs.readdir("./sites",function(e,folders){
@@ -26,7 +26,7 @@ http.createServer(function (request, response) {
 		'Content-Type': 'text/html',
 		'Access-Control-Allow-Origin' : '*'
 	});
-	sites[host_parts[0]].show(request.url.split("/"),function(html){
+	sites[host].show(request.url.split("/"),function(html){
 		response.end(html);
 	});
 }).listen(1337);
