@@ -23,6 +23,7 @@
   "homepage": "https://github.com/samueldelesque/SimpleCMS",
   "dependencies": {
     "http-server": "~0.7.3",
-    "dropbox": "~0.10.3"
+    "dropbox": "~0.10.3",
+    "jade":"latest"
   }
 }
