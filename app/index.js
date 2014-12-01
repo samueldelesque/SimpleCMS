@@ -30,4 +30,4 @@ http.createServer(function (request, response) {
 		response.end(html);
 	});
 }).listen(1337);
-console.log("Listening!	");
+console.log("Listening!");

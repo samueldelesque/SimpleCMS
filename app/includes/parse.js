@@ -18,7 +18,7 @@ var TreeParser = function(){
 				pages[el] = {
 					title:el,
 					description:null,
-					images:[]
+					content:[]
 				};
 				fs.readdir(dir+"/"+el,function(e,files){
 					files.forEach(function(fi,i){
@@ -44,11 +44,18 @@ var TreeParser = function(){
 						var p = fi.split(".");
 						if(p.length > 1){
 							var ext = p.pop();
+							var t = p.join(".").split("-");
+							if(t.length > 0)t.shift()
+							var title = t.join("-");
 							switch(ext){
 								case "jpg":
 								case "png":
 								case "gif":
-									pages[el].images.push(el+"/"+fi);
+									pages[el].content.push({title:title,type:"img",path:el+"/"+fi});
+								break;
+
+								case "txt":
+									pages[el].content.push({title:title,type:"txt",path:el+"/"+fi});
 								break;
 
 								default:

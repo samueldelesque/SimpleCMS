@@ -34,12 +34,38 @@ var Site = function(host){
 		});
 		return s;
 	}
+	this.generateRedirectURI = function(req) {
+		return url.format({
+			protocol: req.protocol,
+			host: req.headers.host,
+			pathname: app.path() + '/success'
+		});
+	}
+	this.generateCSRFToken = function() {
+		return crypto.randomBytes(18).toString('base64').replace(/\//g, '-').replace(/\+/g, '_');
+	}
 	this.render = function(){
 		var s = this;
 		s.getData(function(data){
 			s.set("pages",data);
 		});
 		return s;
+	}
+	this.login = function(){
+		var s = this;
+		var csrfToken = s.generateCSRFToken();
+		res.cookie('csrf', csrfToken);
+		res.redirect(url.format({
+			protocol: 'https',
+			hostname: 'www.dropbox.com',
+			pathname: '1/oauth2/authorize',
+			query: {
+				client_id: "APP_KEY",//App key of dropbox api
+				response_type: 'code',
+				state: csrfToken,
+				redirect_uri: generateRedirectURI(req)
+			}
+		}));
 	}
 	this.show = function(url,callback){
 		var s = this;

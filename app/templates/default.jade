@@ -8,6 +8,12 @@ html(lang="en")
 		main
 			h1= page.title
 			ul(class="content")
-				each img in page.images
-					li
-						img(src=cdn+img)
+				each el in page.content
+					li(class="type-"+el.type)
+						case el.type
+							when "img"
+								img(src=cdn+el.path)
+								h3= el.title
+							when "txt"
+								p= el.text
+								h3= el.title
