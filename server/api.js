@@ -40,6 +40,7 @@ http.createServer(function (request, response) {
 	else GLOBAL.cdn = "http://104.236.54.11:1002/sites/"
 
 	var url = request.url.split("/")
+	if(url[1] == "")url[1] = "home.html"
 	var page = url[1].split(".");
 	if(page.length == 2 && page[1] == "html"){
 
