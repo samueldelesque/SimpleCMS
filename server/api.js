@@ -10,9 +10,6 @@ var http = require('http'),
 	disregardFiles = [".DS_Store",".hide",".git",".deleteme"],
 	prev = function(){}
 
-// Change this to whereever the fileserver should point to. (fileserver.js)
-GLOBAL.cdn = "http://0.0.0.0:"+cdn_port+"/sites/";
-
 // Dynamically build a list of sites based on the folders in /public/sites
 fs.readdir(root_url+"/public/sites",function(err,folders){
 	if(err){ console.error("Could not open sites dir!",err); return;}
@@ -37,6 +34,11 @@ http.createServer(function (request, response) {
 
 	// Set default site to be shown as fallback
 	if(!sites[host]){host = "localhost";}
+
+	// cdn set to cdn.site.com by default if not local
+	if(host == "localhost") GLOBAL.cdn = "http://0.0.0.0:"+cdn_port+"/sites/"
+	else GLOBAL.cdn = "http://cdn."+host+"/sites/"
+
 	var url = request.url.split("/")
 	var page = url[1].split(".");
 	if(page.length == 2 && page[1] == "html"){
