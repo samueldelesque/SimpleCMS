@@ -1,14 +1,14 @@
 var fs    = require('fs');
 var TreeParser = function(){
-	var pages = {};
 	this.read = function(dir,callback){
+		var pages = {};
 		fs.readdir(dir,function(e,folders){
 			if(e){
 				callback("Failed to read directory!",{});
 				console.error("Failed to read directory!",e);
 				return;
 			}
-			var ignore = [".DS_Store","css","meta.txt"];
+			var ignore = [".DS_Store","css","meta.txt","js","menu.txt"];
 			var pending = folders.length;
 			folders.forEach(function(el,i){
 				if(ignore.indexOf(el) > -1){
@@ -20,7 +20,8 @@ var TreeParser = function(){
 					description:null,
 					content:[]
 				};
-				fs.readdir(dir+"/"+el,function(e,files){
+				var folderPath = dir+"/"+el;
+				fs.readdir(folderPath,function(e,files){
 					files.forEach(function(fi,i){
 						if(fi == "meta.txt"){
 							pending++;
@@ -49,6 +50,7 @@ var TreeParser = function(){
 							var title = t.join("-");
 							switch(ext){
 								case "jpg":
+								case "jpeg":
 								case "png":
 								case "gif":
 									pages[el].content.push({title:title,type:"img",path:el+"/"+fi});

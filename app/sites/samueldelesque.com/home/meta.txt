@@ -1,2 +1,0 @@
-title: Test
-description: Welcome to Samuel Delesque's website

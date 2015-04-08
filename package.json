@@ -24,6 +24,9 @@
   "dependencies": {
     "http-server": "~0.7.3",
     "dropbox": "~0.10.3",
-    "jade":"latest"
+    "jade": "latest",
+    "node-static": "~0.7.6",
+    "node-watch": "~0.3.4",
+    "for-each": "~0.3.2"
   }
 }
