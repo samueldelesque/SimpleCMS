@@ -37,7 +37,7 @@ http.createServer(function (request, response) {
 
 	// cdn set to cdn.site.com by default if not local
 	if(host == "localhost") GLOBAL.cdn = "http://0.0.0.0:"+cdn_port+"/sites/"
-	else GLOBAL.cdn = "http://cdn."+host+"/sites/"
+	else GLOBAL.cdn = "http://104.236.54.11:1002/sites/"
 
 	var url = request.url.split("/")
 	var page = url[1].split(".");
