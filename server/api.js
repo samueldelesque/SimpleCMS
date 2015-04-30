@@ -35,7 +35,7 @@ http.createServer(function (request, response) {
 		page = null
 
 	if(host.hostname == "localhost") GLOBAL.cdn = "http://"+host.hostname+":"+cdn_port+"/"
-	else GLOBAL.cdn = "http://cdn."+host.hostname+"/"
+	else GLOBAL.cdn = "http://"+host.hostname+":"+cdn_port+"/"
 
 	if(host.pathname == "/") page = "home.html"
 	else page = request.url.replace(/^\//,"")
