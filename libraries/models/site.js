@@ -1,6 +1,6 @@
-var Parser = require('./parse'),
-	Model = require('./model'),
-	Utils = require('./utilities'),
+var Parser = require('../parse'),
+	Model = require('../model'),
+	Utils = require('../utilities'),
 	fs    = require('fs'),
 	jade = require('jade'),
 	root_url = process.cwd()+"/",
@@ -10,11 +10,11 @@ var Site = Model.extend({
 	parseFiles: function(callback){
 		var s = this;
 		if(!s.get("host")){console.error("No host given!");}
-		var path = root_url+"public/sites/"+s.get("host")
+		var path = this.get("rootpath")+s.get("host")
 
 		fs.exists(path,function(exists){
 			if(!exists){
-				console.error("Host not found "+path+s.get("host")+"!")
+				console.error("Host not found "+path+"!")
 				return;
 			}
 
@@ -38,7 +38,7 @@ var Site = Model.extend({
 	},
 	getScripts: function(){
 		var s = this
-		fs.readdir(root_url+"public/sites/"+s.get("host")+"/js",function(err,scripts){
+		fs.readdir(this.get("rootpath")+s.get("host")+"/js",function(err,scripts){
 			if(err){return;}
 			var list = []
 			scripts.forEach(function(script){
@@ -52,7 +52,7 @@ var Site = Model.extend({
 	getStaticMenu: function(){
 		var s = this,
 			staticLinks = []
-		fs.readFile(root_url+"public/sites/"+s.get("host")+"/menu.txt", 'utf8', function(err,data){
+		fs.readFile(this.get("rootpath")+s.get("host")+"/menu.txt", 'utf8', function(err,data){
 			if(err){return;}
 			var links = data.split("\n");
 			Utils.forEach(links,function(link,i){
@@ -66,7 +66,7 @@ var Site = Model.extend({
 		var s = this
 		var pageData = s.getData(page)
 		var menuData = s.getMenu()
-		callback(jade.renderFile(root_url+"server/templates/"+pageData.template+'.jade', {cdn:cdn+s.get("host")+"/",scripts:s.get("scripts"),page:pageData,menu:menuData}));
+		callback(jade.renderFile(root_url+"server/templates/"+pageData.template+'.jade', {cdn:GLOBAL.cdn,scripts:s.get("scripts"),page:pageData,menu:menuData}));
 		return s;
 	},
 	getMenu: function(){
