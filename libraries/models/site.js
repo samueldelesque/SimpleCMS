@@ -30,7 +30,7 @@ var Site = Model.extend({
 				return;
 			}
 
-			s.set("pages",data);
+			s.set("pages",data)
 		})
 		s.getScripts()
 		s.getStaticMenu()
@@ -77,7 +77,7 @@ var Site = Model.extend({
 			dynamicLinks: []
 		}
 		Utils.forEach(data,function(page,url){
-			menu.dynamicLinks.push({url:url+".html",title:page.title})
+			menu.dynamicLinks.push({url:url+".html",title:page.title||"",menu:page.menu||page.title||""})
 		})
 		return menu
 	},

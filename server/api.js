@@ -6,6 +6,7 @@ var http = require('http'),
 	Utils = require(rootpath+"/libraries/utilities"),
 	port = 1801,
 	cdn_port = 1802,
+	is_dev = true,
 	urls = [],
 	sites = {},
 	URL = require("url-parse"),
@@ -13,26 +14,29 @@ var http = require('http'),
 	prev = function(){}
 
 // Dynamically build a list of sites based on the folders in /public/sites
-fs.readdir(rootpath+"/public/sites",function(err,folders){
-	if(err){ console.error("Could not open sites dir!",err); return;}
+var renderDir = function(){
+	fs.readdir(rootpath+"/public/sites",function(err,folders){
+		if(err){ console.error("Could not open sites dir!",err); return;}
 
-	folders.forEach(function(url){
-		if(disregardFiles.indexOf(url) == -1){
-			// generate a new Site and parse its content
-			sites[url] = new Site({rootpath:rootpath+"/public/sites/",host:url,scripts:[]}).render();
+		folders.forEach(function(url){
+			if(disregardFiles.indexOf(url) == -1){
+				// generate a new Site and parse its content
+				sites[url] = new Site({rootpath:rootpath+"/public/sites/",host:url,scripts:[]}).render();
 
-			// watch folder for changes
-			watch(rootpath+"/public/sites/"+url, function(filename) {
-				console.log(url," had updated content.");
-				sites[url].render();
-			});
-		}
-	});
-});
+				// watch folder for changes
+				watch(rootpath+"/public/sites/"+url, function(filename) {
+					sites[url].render()
+				})
+			}
+		})
+	})
+}
 
 http.createServer(function (request, response) {
 	var host = new URL(request.headers.host),
 		page = null
+
+	if(is_dev)renderDir()
 
 	if(host.hostname == "localhost") GLOBAL.cdn = "http://"+host.hostname+":"+cdn_port+"/"
 	else GLOBAL.cdn = "http://"+host.hostname+":"+cdn_port+"/"
@@ -62,6 +66,8 @@ http.createServer(function (request, response) {
 		});
 		response.end(JSON.stringify(sites[host.hostname].getData(reqpage[0])));
 	}
-}).listen(port);
+}).listen(port)
+
+renderDir()
 
 console.log("Listening on port:"+port);

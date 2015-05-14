@@ -11,7 +11,9 @@ var TreeParser = function(){
 			var ignore = [".DS_Store","css","meta.txt","js","menu.txt"];
 			var pending = folders.length;
 			folders.forEach(function(el,i){
-				if(ignore.indexOf(el) > -1){
+				var folderPath = dir+"/"+el;
+				// Skip files in root
+				if(ignore.indexOf(el) > -1 || !fs.lstatSync(folderPath).isDirectory()){
 					pending--;
 					return;
 				}
@@ -20,8 +22,11 @@ var TreeParser = function(){
 					description:null,
 					content:[]
 				};
-				var folderPath = dir+"/"+el;
 				fs.readdir(folderPath,function(e,files){
+					if(e){
+						console.error(e)
+						return callback(e)
+					}
 					files.forEach(function(fi,i){
 						if(fi == "meta.txt"){
 							pending++;
@@ -33,7 +38,10 @@ var TreeParser = function(){
 								var attributes = data.split("\n");
 								attributes.forEach(function(attr){
 									var parts = attr.split(":");
-									pages[el][parts[0].trim()] = parts[1].trim();
+									if(parts.length==2)
+										pages[el][parts[0].trim()] = parts[1].trim();
+									else
+										console.log(parts,"in",el+"/"+fi,"seems to have a problem.")
 								});
 								pending--;
 								if(pending==0){
@@ -48,7 +56,7 @@ var TreeParser = function(){
 							var t = p.join(".").split("-");
 							if(t.length > 0)t.shift()
 							var title = t.join("-");
-							switch(ext){
+							switch(ext.toLowerCase()){
 								case "jpg":
 								case "jpeg":
 								case "png":
