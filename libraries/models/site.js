@@ -4,7 +4,7 @@ var Parser = require('../parse'),
 	fs    = require('fs'),
 	jade = require('jade'),
 	root_url = process.cwd()+"/",
-	disregardFiles = [".DS_Store","meta.txt"]
+	disregardFiles = [".DS_Store","meta.txt","_full","_thumbs"]
 
 var Site = Model.extend({
 	parseFiles: function(callback){
@@ -34,6 +34,7 @@ var Site = Model.extend({
 		})
 		s.getScripts()
 		s.getStaticMenu()
+		s.getFooter()
 		return s
 	},
 	getScripts: function(){
@@ -62,11 +63,18 @@ var Site = Model.extend({
 			s.set("staticLinks",staticLinks)
 		})
 	},
+	getFooter: function(){
+		var s = this
+		fs.readFile(this.get("rootpath")+s.get("host")+"/footer.txt", 'utf8', function(err,data){
+			if(err){return;}
+			s.set("footer",data.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2'))
+		})
+	},
 	html: function(page,callback){
 		var s = this
 		var pageData = s.getData(page)
 		var menuData = s.getMenu()
-		callback(jade.renderFile(root_url+"server/templates/"+pageData.template+'.jade', {cdn:GLOBAL.cdn,scripts:s.get("scripts"),page:pageData,menu:menuData}));
+		callback(jade.renderFile(root_url+"server/templates/"+pageData.template+'.jade', {cdn:GLOBAL.cdn,scripts:s.get("scripts"),page:pageData,menu:menuData,footer:s.get("footer")}));
 		return s;
 	},
 	getMenu: function(){
@@ -84,6 +92,7 @@ var Site = Model.extend({
 	getData: function(page){
 		var s = this
 		var data = s.get("pages")
+		if(!data){console.log("Failed to load pages",s.get("pages"));return {}}
 		if(typeof page == undefined) return data
 		if(page.length == 0) page="home"
 		if(!data[page]) data[page] = {template:"notfound"}

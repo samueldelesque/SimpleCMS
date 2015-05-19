@@ -8,7 +8,7 @@ var TreeParser = function(){
 				console.error("Failed to read directory!",e);
 				return;
 			}
-			var ignore = [".DS_Store","css","meta.txt","js","menu.txt"];
+			var ignore = [".DS_Store","css","meta.txt","js","menu.txt","_full","_thumbs"];
 			var pending = folders.length;
 			folders.forEach(function(el,i){
 				var folderPath = dir+"/"+el;
@@ -61,7 +61,7 @@ var TreeParser = function(){
 								case "jpeg":
 								case "png":
 								case "gif":
-									pages[el].content.push({title:title,type:"img",path:el+"/"+fi});
+									pages[el].content.push({title:title,type:"img",path:el+"/"+fi,thumb:el+"/_thumbs/"+fi,full:el+"/_full/"+fi});
 								break;
 
 								case "txt":
