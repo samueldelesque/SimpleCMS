@@ -67,8 +67,11 @@ var Site = Model.extend({
 		var s = this
 		fs.readFile(this.get("rootpath")+s.get("host")+"/footer.txt", 'utf8', function(err,data){
 			if(err){return;}
-			s.set("footer",data.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2'))
+			s.set("footer",s.formatLineBreaks(data))
 		})
+	},
+	formatLineBreaks: function(data){
+		return data.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2')
 	},
 	html: function(page,callback){
 		var s = this

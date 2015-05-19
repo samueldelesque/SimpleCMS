@@ -65,7 +65,11 @@ var TreeParser = function(){
 								break;
 
 								case "txt":
-									pages[el].content.push({title:title,type:"txt",path:el+"/"+fi});
+									fs.readFile(dir+"/"+el+"/"+fi, 'utf8', function(err,data){
+										if(!err){
+											pages[el].content.push({title:title,type:"txt",text:data.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>$2')});
+										}
+									})
 								break;
 
 								default:
